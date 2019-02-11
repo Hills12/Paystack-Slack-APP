@@ -4,13 +4,12 @@ const axios = require("axios"),
     Schema = require("../model/schema"),
     {login} = require("./fetcher")
 
-const {User} = Schema;
-
-let token = "xoxb-256382898130-544456536129-MkhvhRr9BV8vqUzStjMd8CxB",
-    incomingWebHook = "https://hooks.slack.com/services/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";
+const {User} = Schema,
+    {enVar} = require("../config/config"),
+    {processing, wrongSlashFormat, loginSuccesful, alreadyLoggedIn, processMenu, help, unAuthWorksapce } = require("../model/attachments");
 
 const bot = new slackbot({
-    token: token,
+    token: enVar.token,
     name: "Paystack"
 });
 
@@ -47,120 +46,6 @@ function handlemessage(message){
         console.log("A message was just recieved")  
     }
 }
-
-let processing = {"attachments": [ {"text" : "I'm processing your request...", "color": "good"} ]},
-    wrongSlashFormat = {"attachments": [ {"text" : 'Wrong Slash Format. \n Use this format "/paystack-login email@gmail.com password"', "color": "warning"} ] },
-    loginSuccesful = {"response_type": "in_channel", "attachments": [ {"text" : 'login successful. \n Use "/paystack-help" for how to use me', "color": "good"} ] },
-    alreadyLoggedIn = {"attachments": [ {"text" : "This workspace had already been logged in", "color": "warning"} ] },
-    processMenu = {
-        "text": "Please interact with any of these buttons and drop-down to get me working for you.",
-        "attachments": [
-            {
-                "fallback": "Paystack Menu",
-                "callback_id": "Paystack_menu",
-                "color": "#3AA3E3",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "Invoice",
-                        "text": "Create Invoice",
-                        "type": "button",
-                        "value": "invoice"
-                    },
-                    {
-                        "name": "Insight",
-                        "text": "Customer Insight",
-                        "type": "button",
-                        "value": "insight"
-                    },
-                    {
-                        "name": "CSV",
-                        "text": "Excel Sheet Analysis",
-                        "type": "select",
-                        "options": [
-                            {
-                                "text": "Transactions",
-                                "value": "transactions"
-                            },
-                            {
-                                "text": "Payout",
-                                "value": "payout"
-                            },
-                            {
-                                "text": "Customers Info",
-                                "value": "customers"
-                            }
-                            
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    help = {
-        "response_type": "in_channel",
-        "text": "How to interact with me:",
-        "attachments": [
-            {
-                "text": "Slash Commands",
-                "fields": [
-                    {
-                        "title": "/paystack-help",
-                        "value": "Shows how to interact with me",
-                        "short": true
-                    },
-                    {
-                        "title": "/paystack-login",
-                        "value": "Login into paystack with email and password",
-                        "short": true
-                    },
-                    {
-                        "title": "/paystack-menu",
-                        "value": "Displays a list of interactive buttons and drop-dwons",
-                        "short": true
-                    }
-                ],
-                "color": "#F35A00"
-            },
-            {
-                "text": "Buttons",
-                "fields": [
-                    {
-                        "title": "Create Invoice",
-                        "value": "Will create and send invoice to given customer's email",
-                        "short": true
-                    },
-                    {
-                        "title": "Customer Insight",
-                        "value": "Will take a snapshot of customers insight and display",
-                        "short": true
-                    }
-                ],
-                "color": "good"
-            },
-            {
-                "text": "Drop Down Menu",
-                "fields": [
-                    {
-                        "title": "",
-                        "value": "Will display a drop down that shows differnt excel sheet options to pick from"
-                    }
-                ],
-                "color": "warning"
-            },
-            {
-                "text": "Bot",
-                "fields": [
-                    {
-                        "title": "",
-                        "value": "when you @paystack in any message that includes the word revenue, I will respond with your current revenue and payout"
-                    }
-                ],
-                "color": "danger"
-            }
-        ]
-    },
-    unAuthWorksapce = { "attachments": [ {"text" : "This workspace is not authorized, kindly login", "color": "warning"} ] }
 
 exports.processing = (req, res, next) => {
     res.json(processing)
@@ -281,7 +166,7 @@ exports.processInteractions = (req, res) => {
                     let button_value = payload.actions[0].value;
                     if(button_value == "insight"){
                         login(user.email, user.password, button_value, payload.team.id).then(() => {
-                            axios.post(incomingWebHook, {"response_type": "in_channel", "attachments": [ {"text" : `<@${payload.user.id}> Just requsted for monthly customer Insight, down here is the snapshot`, "image_url": `https://76b3d1cd.ngrok.io/insight${payload.team.id}.png`, "color" : "#3AA3E3"} ] })
+                            axios.post(enVar.incomingWebHook, {"response_type": "in_channel", "attachments": [ {"text" : `<@${payload.user.id}> Just requsted for monthly customer Insight, down here is the snapshot`, "image_url": `https://paystack-serve.herokuapp.com//insight${payload.team.id}.png`, "color" : "#3AA3E3"} ] })
                             .then((res) => {
                                 console.log(`${button_value} Request Sucessfull!!!`)
                             })
@@ -293,7 +178,7 @@ exports.processInteractions = (req, res) => {
                         })
                     }else if(button_value == "invoice"){
                         const dialogData = {
-                            token: token,
+                            token: enVar.token,
                             trigger_id: payload.trigger_id,
                             dialog: JSON.stringify({
                                 title: 'Create and send Invoice',
