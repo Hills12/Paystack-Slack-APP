@@ -1,6 +1,6 @@
 exports.development = { dbLocation: "mongodb://127.0.0.1/paystack" } //developemt database location
 
-exports.Mlab = { dbLocation: "mongodb://dothjs:Catholic12@ds331135.mlab.com:31135/paystack-serve" }
+exports.Mlab = { dbLocation: "mongodb://paystack:Catholic12@ds331135.mlab.com:31135/paystack-serve" }
 
 exports.cors = (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
