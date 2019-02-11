@@ -63,9 +63,7 @@ exports.processHelp = (req, res) => {
 }
 
 exports.saveSlack = (req, res) => {
-    console.log("was here before user")
     User.findOne({UserId: req.body.team_id}, (err, user) => {
-        console.log("here after user")
         if(err)console.log(err)
         else if(!user){
             if(req.body.text.split(" ").length !== 2){

@@ -95,7 +95,7 @@ exports.help = {
                 },
                 {
                     "title": "/paystack-menu",
-                    "value": "Displays a list of interactive buttons and drop-dwons",
+                    "value": "Displays a list of interactive buttons and drop-downs",
                     "short": true
                 }
             ],
