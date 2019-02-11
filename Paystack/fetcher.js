@@ -113,7 +113,7 @@ let getInsight = async (page, browser, teamID) => {
         await page.waitFor(5000);
 
         await page.screenshot({
-            path: `paystack/insight/insight${teamID}.png`, fullPage: true
+            path: `Paystack/insight/insight${teamID}.png`, fullPage: true
         })
 
         await browser.close();
