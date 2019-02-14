@@ -2,10 +2,8 @@ const puppeteer = require("puppeteer");
 
 exports.login = async (email = String, password = String, getWhat = String, teamID, submittedAmount, submittedEmail, submittedInstruction) => {
     try {
-        const browser = await puppeteer.launch({args : [
-            '--window-size=1920,1080', 
-            '--no-sandbox', 
-            '--disable-setuid-sandbox'
+        const browser = await puppeteer.launch({headless: false, args : [
+            '--window-size=1920,1080'
         ]});
 
         const page = await browser.newPage();

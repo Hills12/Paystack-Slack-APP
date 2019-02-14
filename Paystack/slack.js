@@ -165,8 +165,9 @@ exports.processInteractions = (req, res) => {
                 }else if(payload.actions[0].type === "button"){
                     let button_value = payload.actions[0].value;
                     if(button_value == "insight"){
+                        res.sendStatus(200)
                         login(user.email, user.password, button_value, payload.team.id).then(() => {
-                            axios.post(enVar.incomingWebHook, {"response_type": "in_channel", "attachments": [ {"text" : `<@${payload.user.id}> Just requsted for monthly customer Insight, down here is the snapshot`, "image_url": `https://paystack-serve.herokuapp.com//insight${payload.team.id}.png`, "color" : "#3AA3E3"} ] })
+                            axios.post(enVar.incomingWebHook, {"response_type": "in_channel", "attachments": [ {"text" : `<@${payload.user.id}> Just requsted for monthly customer Insight, down here is the snapshot`, "image_url": `https://743215b7.ngrok.io/insight${payload.team.id}.png`, "color" : "#3AA3E3"} ] })
                             .then((res) => {
                                 console.log(`${button_value} Request Sucessfull!!!`)
                             })

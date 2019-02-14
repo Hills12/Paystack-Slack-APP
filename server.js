@@ -5,10 +5,10 @@ const   express = require("express"),
 
 //import all local packages*********************************
 const   route = require("./routes/route"),
-    {Mlab} = require("./config/config"),
+    {enVar} = require("./config/config"),
     app = express();
 
-mongoose.connect(Mlab.dbLocation);
+mongoose.connect(enVar.db);
 mongoose.connection.on("connected", () => console.log("Server connected to mongoDB"));
 
 /* var express = require('express');
